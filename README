@@ -1,7 +1,0 @@
-# README
-
-## Description
-
-Bochs version: 2.6.2
-
-config command: `./configure --prefix=/home/crosscap/bochs --enable-debugger --enable-disasm --enable-iodebug --enable-x86-debugger --with-x --with-x11`
