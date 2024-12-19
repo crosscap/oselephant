@@ -37,3 +37,9 @@ nasm -o src/mbr.bin src/mbr.S
 ```sh
 dd if=./src/mbr.bin of=./hd60M.img bs=512 count=1 conv=notrunc
 ```
+
+### Show the content of a file
+
+```sh
+xxd -u -a -g 1 -s $2 -l $3 $1
+```
