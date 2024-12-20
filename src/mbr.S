@@ -1,4 +1,7 @@
 ; Master boot loader
+;
+; LOADER_BASE_ADDR equ 0xA000
+; LOADER_START_SECTOR equ 0x2
 ; ---------------------------------------------
 SECTION MBR vstart=0x7c00
     mov ax, cs
@@ -7,10 +10,13 @@ SECTION MBR vstart=0x7c00
     mov ss, ax
     mov fs, ax
     mov sp, 0x7c00
+    mov ax, 0xb800
+    mov gs, ax
 
-; Clear the screen using the 0x06 function, all rows can be cleared when roll up the screen
+; Clear the screen using the 0x06 function,
+; all rows can be cleared when roll up the screen
 ; -----------------------------------------------
-;  INT 0x10      Function number: 0x06      Function Description: Roll up window
+;  INT 0x10    Function number: 0x06    Function Description: Roll up window
 ; -----------------------------------------------
 ; input
 ; AH function number = 0x06
@@ -27,33 +33,23 @@ SECTION MBR vstart=0x7c00
 
     int 0x10
 
-;;;;;;;;      Get the cursor position      ;;;;;;;;
-; .get_cursor
-    mov ah, 3   ; Function number: 0x03 Get cursor position
-    mov bh, 0   ; Page number
+    ; Print flashing "1 MBR" with green background and red front
+    mov byte [gs:0x00], '1'
+    mov byte [gs:0x01], 0xA4
 
-    int 0x10    ; Output: CH = beginning row, CL = end row
-                ;         DH = row of cursor, DL = column of cursor
+    mov byte [gs:0x02], ' '
+    mov byte [gs:0x03], 0xA4
 
-;;;;;;;;    End of get the cursor position    ;;;;;;;;
+    mov byte [gs:0x04], 'M'
+    mov byte [gs:0x05], 0xA4
 
-;;;;;;;;      Print strings      ;;;;;;;;;
+    mov byte [gs:0x06], 'B'
+    mov byte [gs:0x07], 0xA4
 
-    mov ax, message
-    mov bp, ax
-
-
-
-    mov cx, 5
-    mov ax, 0x1301
-
-    mov bx, 0x2
-
-    int 0x10
-;;;;;;;;    End of printing string    ;;;;;;;;;
+    mov byte [gs:0x08], 'R'
+    mov byte [gs:0x09], 0xA4
 
     jmp $    ; Infinite loop
 
-    message db "1 MBR"
     times 510-($-$$) db 0
     db 0x55, 0xaa
