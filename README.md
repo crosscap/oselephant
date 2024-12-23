@@ -29,7 +29,7 @@ bin/bximage -hd -mode="flat" -size=60 -q hd60M.img
 ### Assemble mbr source code
 
 ```sh
-nasm -o src/mbr.bin src/mbr.S
+nasm -I src/include/ -o src/mbr.bin src/mbr.S
 ```
 
 ### Write mbr to image
