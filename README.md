@@ -47,11 +47,11 @@ xxd -u -a -g 1 -s $2 -l $3 $1
 ### Assemble loader source
 
 ```sh
-nasm -I include/ -o loader.bin loader.S
+nasm -I src/include/ -o src/loader.bin src/loader.S
 ```
 
 ### Write loader to image
 
 ```sh
-dd if=./src/loader.bin of=./hd60M.img bs=512 count=1 seek=2 conv=notrunc
+dd if=./src/loader.bin of=./hd60M.img bs=512 count=4 seek=2 conv=notrunc
 ```

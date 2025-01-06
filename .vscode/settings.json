@@ -1,5 +1,5 @@
 {
   "nasm.extraFlags": [
-    "-I include/"
+    "-I src/include/"
   ]
 }

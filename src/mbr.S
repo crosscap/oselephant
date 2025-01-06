@@ -49,7 +49,7 @@ SECTION MBR vstart=0x7c00
 
     mov eax, LOADER_START_SECTOR    ; Starting sector LAB address
     mov bx, LOADER_BASE_ADDR        ; Write address
-    mov cx, 1                       ; Number of sectors to be read in
+    mov cx, 4                       ; Number of sectors to be read in
     call rd_disk_m_16               ; Read the first sector of the loader
 
     jmp LOADER_BASE_ADDR
