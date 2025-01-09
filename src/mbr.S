@@ -52,7 +52,7 @@ SECTION MBR vstart=0x7c00
     mov cx, 4                       ; Number of sectors to be read in
     call rd_disk_m_16               ; Read the first sector of the loader
 
-    jmp LOADER_BASE_ADDR
+    jmp LOADER_BASE_ADDR + 0x300    ; Jump to the code part of the loader
 
 ; -----------------------------------------------
 ; function: read n sectors from hard disk
