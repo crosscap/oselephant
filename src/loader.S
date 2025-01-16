@@ -146,4 +146,84 @@ p_mode_start:
 
     mov byte [gs:160], 'P'
 
+; Create page directory and page table, and initialize page memory bitmap
+    call setup_page
+
+; Put descriptor table into memory gdt_ptr
+    sgdt [gdt_ptr]
+
+; Set the segment base address in the video segment descriptor in the gdt descriptor + 0xc0000000
+    mov ebx, [gdt_ptr + 2]
+    or dword [ebx + 8 * 3 + 4], 0xc0000000
+;
+
+; Add 0xc0000000 to the base address of gdt to make it the high address where the kernel is located
+    add dword [gdt_ptr + 2], 0xc0000000
+
+    add esp, 0xc0000000
+
+;
+    mov eax, PAGE_DIR_TABLE_POS
+    mov cr3, eax
+
+;
+    mov eax, cr0
+    or  eax, 0x80000000
+    mov cr0, eax
+
+;
+    lgdt [gdt_ptr]
+
+    mov byte [gs:160], 'V'
+
     jmp $
+
+; --------- Create page directory and page table ---------
+setup_page:
+; Clear page directory
+    mov ecx, 4096
+    mov esi, 0
+  .clear_page_dir:
+    mov byte [PAGE_DIR_TABLE_POS + esi], 0
+    inc esi
+    loop .clear_page_dir
+
+; Create page directory entry (PDE)
+.create_pde:
+    mov eax, PAGE_DIR_TABLE_POS
+    add eax, 0x1000
+    mov ebx, eax
+
+;
+; The addresses below 0xc03ffff and 0x003ffff both point to the same page table
+; Prepare the page table for the kernel
+    or eax, PG_US_U | PG_RW_W | PG_P
+    mov [PAGE_DIR_TABLE_POS + 0x0], eax
+    mov [PAGE_DIR_TABLE_POS + 0xc00], eax
+
+    sub eax, 0x1000
+    mov [PAGE_DIR_TABLE_POS + 4092], eax
+
+; Create page table entry (PTE)
+    mov ecx, 256
+    mov esi, 0
+    mov edx, PG_US_U | PG_RW_W | PG_P
+.create_pte:
+    mov [ebx+esi*4], edx
+    add edx, 4096
+    inc esi
+    loop .create_pte
+
+; Create other kernel page directory entry (PDE)
+    mov eax, PAGE_DIR_TABLE_POS
+    add eax, 0x2000
+    or eax, PG_US_U | PG_RW_W | PG_P
+    mov ebx, PAGE_DIR_TABLE_POS
+    mov ecx, 254
+    mov esi, 769
+.create_krnel_pde:
+    mov [ebx+esi*4], eax
+    inc esi
+    add eax, 0x1000
+    loop .create_krnel_pde
+    ret

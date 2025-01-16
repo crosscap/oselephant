@@ -1,6 +1,13 @@
 ; ----------   loader and kernel   ----------
-LOADER_BASE_ADDR equ 0x900
-LOADER_START_SECTOR equ 0x2
+LOADER_BASE_ADDR      equ 0x900
+LOADER_STACK_TOP      equ LOADER_BASE_ADDR
+LOADER_START_SECTOR   equ 0x2
+KERNEL_BIN_BASE_ADDR  equ 0x70000
+KERNEL_START_SECTOR   equ 0x9
+KERNEL_ENTRY_POINT    equ 0xc0001500
+
+; ----------   page table   ----------
+PAGE_DIR_TABLE_POS  equ 0x100000
 
 ; -------- GDT descriptor attribute ---------
 DESC_G_4k           equ 1000_0000_0000_0000_0000_0000b
@@ -32,3 +39,13 @@ RPL2 equ 10b
 RPL3 equ 11b
 TI_DGT equ 000b
 TI_LGT equ 100b
+
+; ---------- Attribute of the page table ----------
+PG_P    equ 1b
+PG_RW_R equ 00b
+PG_RW_W equ 10b
+PG_US_S equ 000b
+PG_US_U equ 100b
+
+; ---------- define of program type ----------
+PT_NULL equ 0
