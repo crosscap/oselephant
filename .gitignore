@@ -2,3 +2,5 @@ bin/
 share/
 *.out
 *.img
+*.bin
+*.o

@@ -6,7 +6,7 @@ Bochs version: 2.6.2
 
 ## Some useful commands
 
-### config and install
+### Config and install
 
 ```sh
 ./configure --prefix=/home/crosscap/bochs --enable-debugger --enable-disasm --enable-iodebug --enable-x86-debugger --with-x --with-x11
@@ -14,13 +14,13 @@ make
 make install
 ```
 
-### run
+### Run
 
 ```sh
 bin/bochs -f bochsrc.disk
 ```
 
-### generage image
+### Generate image
 
 ```sh
 bin/bximage -hd -mode="flat" -size=60 -q hd60M.img
@@ -54,4 +54,28 @@ nasm -I src/include/ -o src/loader.bin src/loader.S
 
 ```sh
 dd if=./src/loader.bin of=./hd60M.img bs=512 count=4 seek=2 conv=notrunc
+```
+
+### Compile kernel to object file
+
+```sh
+gcc -m32 -c -o src/kernel/main.o src/kernel/main.c
+```
+
+### Link kernel object file to kernel.bin
+
+```sh
+ld src/kernel/main.o -m elf_i386 -Ttext 0xc0001500 -e main -o src/kernel/kernel.bin
+```
+
+### Write kernel to image
+
+```sh
+dd if=./src/kernel/kernel.bin of=./hd60M.img bs=512 count=200 seek=9 conv=notrunc
+```
+
+### Read elf file kernel.bin
+
+```sh
+readelf -e src/kernel/kernel.bin
 ```
