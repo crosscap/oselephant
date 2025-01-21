@@ -6,11 +6,11 @@ if [[ ! -f ./src/hd60M.img ]]; then
 fi
 
 if [[ ! -f ./src/mbr.bin ]]; then
-  nasm -I src/include/ -o src/mbr.bin src/mbr.S
+  nasm -I src/boot/include/ -o src/boot/mbr.bin src/boot/mbr.S
 fi
 
 if [[ ! -f ./src/loader.bin ]]; then
-  nasm -I src/include/ -o src/loader.bin src/loader.S
+  nasm -I src/boot/include/ -o src/boot/loader.bin src/boot/loader.S
 fi
 
 if [[ ! -f ./src/kernel/kernel.bin ]]; then
@@ -18,6 +18,6 @@ if [[ ! -f ./src/kernel/kernel.bin ]]; then
   ld src/kernel/main.o -m elf_i386 -Ttext 0xc0001500 -e main -o src/kernel/kernel.bin
 fi
 
-dd if=./src/mbr.bin of=./hd60M.img bs=512 count=1 conv=notrunc
-dd if=./src/loader.bin of=./hd60M.img bs=512 count=4 seek=2 conv=notrunc
+dd if=./src/boot/mbr.bin of=./hd60M.img bs=512 count=1 conv=notrunc
+dd if=./src/boot/loader.bin of=./hd60M.img bs=512 count=4 seek=2 conv=notrunc
 dd if=./src/kernel/kernel.bin of=./hd60M.img bs=512 count=200 seek=9 conv=notrunc

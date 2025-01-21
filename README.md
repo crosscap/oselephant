@@ -18,6 +18,7 @@ make install
 
 ```sh
 bin/bochs -f bochsrc.disk
+bin/bochs # have bochsrc
 ```
 
 ### Generate image
@@ -29,13 +30,13 @@ bin/bximage -hd -mode="flat" -size=60 -q hd60M.img
 ### Assemble mbr source code
 
 ```sh
-nasm -I src/include/ -o src/mbr.bin src/mbr.S
+nasm -I src/boot/include/ -o src/boot/mbr.bin src/boot/mbr.S
 ```
 
 ### Write mbr to image
 
 ```sh
-dd if=./src/mbr.bin of=./hd60M.img bs=512 count=1 conv=notrunc
+dd if=./src/boot/mbr.bin of=./hd60M.img bs=512 count=1 conv=notrunc
 ```
 
 ### Show the content of a file
@@ -47,13 +48,13 @@ xxd -u -a -g 1 -s $2 -l $3 $1
 ### Assemble loader source
 
 ```sh
-nasm -I src/include/ -o src/loader.bin src/loader.S
+nasm -I src/boot/include/ -o src/boot/loader.bin src/boot/loader.S
 ```
 
 ### Write loader to image
 
 ```sh
-dd if=./src/loader.bin of=./hd60M.img bs=512 count=4 seek=2 conv=notrunc
+dd if=./src/boot/loader.bin of=./hd60M.img bs=512 count=4 seek=2 conv=notrunc
 ```
 
 ### Compile kernel to object file

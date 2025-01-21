@@ -1,5 +1,5 @@
 {
   "nasm.extraFlags": [
-    "-I src/include/"
+    "-I src/boot/include/"
   ]
 }
